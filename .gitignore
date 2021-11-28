@@ -1,0 +1,9 @@
+.env
+src/app/config/google-key.json
+dist/
+node_modules/
+.vscode
+coverage/
+**/.DS_Store
+.DS_Store
+.DS_Store?

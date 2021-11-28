@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        "node_modules",
+        "dist",
+        "src/__test__",
+        "src/models/seeder",
+        "database",
+        "coverage",
+        "script",
+        "jest.config.js",
+        "resources"
+    ]
+}

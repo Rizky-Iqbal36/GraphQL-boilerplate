@@ -7,7 +7,7 @@
 
 ## Description
 
-Graphql boilerplate to build scalable and maintainable app
+Graphql boilerplate to build testable, scalable and maintainable app
 
 ## Stay in touch
 

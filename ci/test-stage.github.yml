@@ -1,0 +1,12 @@
+steps:
+- name: 'test-stage'
+  entryppoint: 'bash'
+  args:
+  - '-c'
+  - |
+    cp .env.example .env
+    npm install
+    npm run dependency:local
+    sleep 5
+    npm run migrate
+    npm run test

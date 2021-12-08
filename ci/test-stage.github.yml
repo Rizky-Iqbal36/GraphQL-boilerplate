@@ -1,5 +1,5 @@
 steps:
-- name: 'test-stage'
+- name: 'rizkyiqbal/dind-nodejs'
   entryppoint: 'bash'
   args:
   - '-c'

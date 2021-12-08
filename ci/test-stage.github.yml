@@ -1,23 +1,27 @@
 steps:
-# Get env
-- name: ubuntu
-  args: ['cp .env.example .env']
-# Start service
-- name: node
-  entrypoint: npm
-  args: ['run', 'dependency:local']
-# Install dependencies
 - name: node
   entrypoint: npm
   args: ['install']
-# Migrate database
-- name: node
-  entrypoint: npm
-  args: ['run','migrate']
-# Run tests
-- name: node
-  entrypoint: npm
-  args: ['test']
+# steps:
+# # Get env
+# - name: ubuntu
+#   args: ['cp .env.example .env']
+# # Start service
+# - name: node
+#   entrypoint: npm
+#   args: ['run', 'dependency:local']
+# # Install dependencies
+# - name: node
+#   entrypoint: npm
+#   args: ['install']
+# # Migrate database
+# - name: node
+#   entrypoint: npm
+#   args: ['run','migrate']
+# # Run tests
+# - name: node
+#   entrypoint: npm
+#   args: ['test']
 
 # [END cloudbuild_npm_node]
 # steps:

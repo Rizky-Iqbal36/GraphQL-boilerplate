@@ -1,6 +1,6 @@
 steps:
 # try
-- name: node
+- name: 'gcr.io/cloud-builders/npm'
   entrypoint: npm
   args: ['install']
 # steps:

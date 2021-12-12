@@ -1,7 +1,14 @@
 module.exports.resolver = {
+  Mutation: {
+    exampleMutation: (parent: any, args: any, context: any, info: any) => {
+      console.log(args);
+      return "this is an example mutation";
+    },
+  },
+
   Query: {
-    helloWorld: (parent: any, args: any, context: any, info: any) => {
-      return "helloworld";
+    exampleQuery: (parent: any, args: any, context: any, info: any) => {
+      return "this is an example query";
     },
   },
 };

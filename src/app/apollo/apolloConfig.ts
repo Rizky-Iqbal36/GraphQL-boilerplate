@@ -1,9 +1,13 @@
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { ApolloServerFastifyConfig } from "apollo-server-fastify";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { FastifyInstance, FastifyReply } from "fastify";
+import { applyMiddleware } from "graphql-middleware";
 
 import { typeDefs, resolvers } from "@root/schema";
 import { IFastifyRequest } from "@root/interfaces";
+
+import MiddlewareHandler from "@app/middlewares";
 interface ISession {
   request: IFastifyRequest;
   reply: FastifyReply;
@@ -11,11 +15,17 @@ interface ISession {
 }
 
 const apolloConfig = (app: FastifyInstance): ApolloServerFastifyConfig => {
+  MiddlewareHandler.registerMiddleware();
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const schemaWithMiddleware = applyMiddleware(
+    schema,
+    ...MiddlewareHandler.getMiddlewares()
+  );
+
   return {
-    typeDefs,
-    resolvers,
+    schema: schemaWithMiddleware,
     context: async ({ request, reply }: ISession) => {
-      throw new Error("uwauwuw");
+      return MiddlewareHandler.context(request, reply);
     },
     /* eslint-disable new-cap */
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer: app.server })],

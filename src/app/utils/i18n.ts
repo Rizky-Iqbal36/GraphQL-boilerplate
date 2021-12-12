@@ -20,10 +20,11 @@ export class Localization {
 
     if (lang) this.i18n.setLocale(lang);
     msg = this.i18n.__(option.key, option.vars as any);
-    if (!msg || msg === option.key)
+    if (!msg || msg === option.key) {
       msg = `<err: localized msg not found in json files><flag: ${
         option.key
       }><lang: ${this.i18n.getLocale()}>`;
+    }
 
     return msg;
   };

@@ -1,8 +1,12 @@
 import fs from "fs";
 import { resolve } from "path";
 
+import MiddlewareHandler from "@app/middlewares";
+
 const typeDefs: string[] = [];
 const resolvers: any[] = [];
+const Mutation: string[] = [];
+const Query: string[] = [];
 
 const typeDefFiles = fs.readdirSync(__dirname + "/typeDefs");
 const resolverFiles = fs.readdirSync(__dirname + "/resolvers");
@@ -20,8 +24,14 @@ resolverFiles.forEach((file: string) => {
       `./resolvers/${file}`
     )).resolver;
 
+    resolver?.Mutation
+      ? Mutation.push(...Object.keys(resolver.Mutation))
+      : null;
+    resolver?.Query ? Query.push(...Object.keys(resolver.Query)) : null;
+
     resolvers.push(resolver);
   }
 });
+MiddlewareHandler.registerResolverRoutes(Query, Mutation);
 
 export { typeDefs, resolvers };

@@ -1,16 +1,16 @@
 /* eslint no-throw-literal: "off"*/
-import { FastifyReply } from "fastify";
-import fs from "fs";
-import { resolve } from "path";
-import { IMiddleware } from "graphql-middleware";
+import { FastifyReply } from 'fastify'
+import fs from 'fs'
+import { resolve } from 'path'
+import { IMiddleware } from 'graphql-middleware'
 import {
   IResolverMiddlewareRoutes,
   IRegisterLocalMiddleware,
   IGlobalMiddleware,
   IRegisterGlobalMiddleware,
   IFastifyRequest,
-  IMiddlewareRegister,
-} from "@root/interfaces";
+  IMiddlewareRegister
+} from '@root/interfaces'
 
 /**
  * For better understanding about MiddlewareHandler please read the following references
@@ -24,148 +24,132 @@ import {
 class MiddlewareHandler {
   private resolverRoutes: IResolverMiddlewareRoutes = {
     Mutation: {},
-    Query: {},
-  };
-  private localResolverRoute = { Mutation: {}, Query: {} };
-  private globalMiddlewares: IRegisterGlobalMiddleware = {};
-  private localMiddlewares: IMiddleware[] = [];
+    Query: {}
+  }
+  private localResolverRoute = { Mutation: {}, Query: {} }
+  private globalMiddlewares: IRegisterGlobalMiddleware = {}
+  private localMiddlewares: IMiddleware[] = []
 
   private checkResolverRoutes(key: string) {
-    Object.keys(this.resolverRoutes).forEach((field) => {
+    Object.keys(this.resolverRoutes).forEach(field => {
       if ((this.resolverRoutes as any)[field].hasOwnProperty(key)) {
-        throw new Error(
-          `${key} already declared, please use another method name`
-        );
+        throw new Error(`${key} already declared, please use another method name`)
       }
-    });
+    })
   }
 
   public registerResolverRoutes(Query?: string[], Mutation?: string[]) {
-    Query?.forEach((value) => {
-      this.checkResolverRoutes(value);
-      this.resolverRoutes.Query[value] = function () {};
-    });
-    Mutation?.forEach((value) => {
-      this.checkResolverRoutes(value);
-      this.resolverRoutes.Mutation[value] = function () {};
-    });
+    Query?.forEach(value => {
+      this.checkResolverRoutes(value)
+      this.resolverRoutes.Query[value] = function () {}
+    })
+    Mutation?.forEach(value => {
+      this.checkResolverRoutes(value)
+      this.resolverRoutes.Mutation[value] = function () {}
+    })
   }
 
   private includeResolver(resolver: string[], middleWareFunc: IMiddleware) {
     if (!resolver || resolver.length === 0) {
-      (this.localResolverRoute as any) = {
+      ;(this.localResolverRoute as any) = {
         Mutation: middleWareFunc,
-        Query: middleWareFunc,
-      };
+        Query: middleWareFunc
+      }
     } else {
-      resolver.forEach((key) => {
-        let found = false;
+      resolver.forEach(key => {
+        let found = false
         try {
-          Object.keys(this.resolverRoutes).forEach((field) => {
+          Object.keys(this.resolverRoutes).forEach(field => {
             if ((this.resolverRoutes as any)[field].hasOwnProperty(key)) {
-              (this.localResolverRoute as any)[field][key] = middleWareFunc;
-              throw true;
+              ;(this.localResolverRoute as any)[field][key] = middleWareFunc
+              throw true
             }
-          });
+          })
         } catch (result) {
-          found = result as boolean;
+          found = result as boolean
         }
         if (!found) {
-          throw new Error(`${key} not registered on resolverRoutes`);
+          throw new Error(`${key} not registered on resolverRoutes`)
         }
-      });
+      })
     }
 
-    return this.localResolverRoute;
+    return this.localResolverRoute
   }
 
   private excludeResolver(resolver: string[], middleWareFunc: IMiddleware) {
     const mergedResolverRoutes = {
       ...this.resolverRoutes.Mutation,
-      ...this.resolverRoutes.Query,
-    };
+      ...this.resolverRoutes.Query
+    }
 
-    resolver.forEach((key) => {
+    resolver.forEach(key => {
       if (!Object.keys(mergedResolverRoutes).includes(key)) {
-        throw new Error(`${key} not registered on resolverRoutes`);
+        throw new Error(`${key} not registered on resolverRoutes`)
       }
-    });
+    })
 
-    Object.keys(this.resolverRoutes).forEach((field) => {
-      Object.keys((this.resolverRoutes as any)[field]).forEach((key) => {
-        (this.localResolverRoute as any)[field][key] = (
-          this.resolverRoutes as any
-        )[field][key];
+    Object.keys(this.resolverRoutes).forEach(field => {
+      Object.keys((this.resolverRoutes as any)[field]).forEach(key => {
+        ;(this.localResolverRoute as any)[field][key] = (this.resolverRoutes as any)[field][key]
         if (!resolver.includes(key)) {
-          (this.localResolverRoute as any)[field][key] = middleWareFunc;
+          ;(this.localResolverRoute as any)[field][key] = middleWareFunc
         } else {
-          delete (this.localResolverRoute as any)[field][key];
+          delete (this.localResolverRoute as any)[field][key]
         }
-      });
-    });
-    return this.localResolverRoute;
+      })
+    })
+    return this.localResolverRoute
   }
 
-  public registerLocalMiddleware({
-    exclude = false,
-    middleWareFunc,
-    resolver,
-  }: IRegisterLocalMiddleware) {
-    this.localResolverRoute = { Mutation: {}, Query: {} };
+  public registerLocalMiddleware({ exclude = false, middleWareFunc, resolver }: IRegisterLocalMiddleware) {
+    this.localResolverRoute = { Mutation: {}, Query: {} }
     this.localResolverRoute = exclude
       ? this.excludeResolver(resolver, middleWareFunc)
-      : this.includeResolver(resolver, middleWareFunc);
+      : this.includeResolver(resolver, middleWareFunc)
 
-    this.localMiddlewares.push(this.localResolverRoute);
+    this.localMiddlewares.push(this.localResolverRoute)
   }
 
   public registerGlobalMiddleware(middlewareFunction: IGlobalMiddleware) {
-    this.globalMiddlewares[middlewareFunction.constructor.name] =
-      middlewareFunction;
+    this.globalMiddlewares[middlewareFunction.constructor.name] = middlewareFunction
   }
 
   public registerMiddleware() {
-    fs.readdirSync(__dirname).forEach((file) => {
-      if (file !== "index.js") {
-        const {
-          localMiddleware,
-          globalMiddleware,
-        }: IMiddlewareRegister = require(resolve(__dirname, `./${file}`));
+    fs.readdirSync(__dirname).forEach(file => {
+      if (file !== 'index.js') {
+        const { localMiddleware, globalMiddleware }: IMiddlewareRegister = require(resolve(__dirname, `./${file}`))
 
         if (localMiddleware) {
-          this.registerLocalMiddleware(localMiddleware);
+          this.registerLocalMiddleware(localMiddleware)
         } else if (globalMiddleware) {
           if (!globalMiddleware.useMiddleware) {
-            throw new Error(
-              "Please add useMiddleware function in order to activate middleware"
-            );
+            throw new Error('Please add useMiddleware function in order to activate middleware')
           }
-          this.registerGlobalMiddleware(globalMiddleware);
+          this.registerGlobalMiddleware(globalMiddleware)
         }
       }
-    });
+    })
   }
 
   public getMiddlewares() {
-    return this.localMiddlewares;
+    return this.localMiddlewares
   }
 
   async context(request: IFastifyRequest, reply: FastifyReply) {
-    let contextPayload = {};
-    await Promise.all(Object.values(this.globalMiddlewares)).then(
-      async (keys) => {
-        await Promise.all(
-          keys.map(async (middleware) => {
-            contextPayload = {
-              ...contextPayload,
-              ...(await middleware.useMiddleware(request, reply)),
-            };
-          })
-        );
-      }
-    );
-    return { req: request, rep: reply, ...contextPayload };
+    let contextPayload = {}
+    await Promise.all(Object.values(this.globalMiddlewares)).then(async keys => {
+      await Promise.all(
+        keys.map(async middleware => {
+          contextPayload = {
+            ...contextPayload,
+            ...(await middleware.useMiddleware(request, reply))
+          }
+        })
+      )
+    })
+    return { req: request, rep: reply, ...contextPayload }
   }
 }
 
-export default new MiddlewareHandler();
+export default new MiddlewareHandler()

@@ -1,23 +1,23 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance } from 'fastify'
 
-import Container from "@root/app/server/container";
+import Container from '@root/app/server/container'
 
 export class CreateApp {
-  public app: FastifyInstance;
+  public app: FastifyInstance
 
-  private container: Container;
+  private container: Container
 
   constructor() {
-    this.container = new Container();
+    this.container = new Container()
 
-    this.app = this.container.app;
+    this.app = this.container.app
   }
 
   public async initServer() {
-    await this.container.load();
+    await this.container.load()
   }
 
   public async stopServer() {
-    await this.app.close();
+    await this.app.close()
   }
 }

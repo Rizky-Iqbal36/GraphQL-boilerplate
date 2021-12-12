@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-fastify";
+import { gql } from 'apollo-server-fastify'
 
 module.exports.typeDef = gql`
   type Mutation {
@@ -8,4 +8,4 @@ module.exports.typeDef = gql`
   type Query {
     exampleQuery: String!
   }
-`;
+`

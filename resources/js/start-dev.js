@@ -20,7 +20,7 @@ const fn = async() => {
 
   watch.start(
     '--noClear',
-    '--onSuccess', `node -e 'require("./dist/app/server/container.js").startServer()'`,
+    '--onSuccess', `node ./dist/app/server/`,
     '--project', 'tsconfig.build.json',
   );
 }

@@ -3,7 +3,7 @@ import fastify, { FastifyInstance } from "fastify";
 import moment from "moment";
 import "moment-duration-format";
 
-import Server from "@app/server";
+import Server from "@app/server/server";
 
 export default class Container {
   private server: Server;
@@ -26,8 +26,3 @@ export default class Container {
     await this.server.start();
   }
 }
-
-module.exports.startServer = async function () {
-  const container = new Container();
-  await container.load();
-};

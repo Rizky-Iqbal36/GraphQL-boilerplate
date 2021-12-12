@@ -6,7 +6,7 @@
     "build": "node resources/js/build.js",
     "commit": "npx git-cz",
     "lint": "eslint --fix 'src/**/**/*.ts'",
-    "start": "npm run build && node -e 'require(\"./dist/app/server/container.js\").startServer()'",
+    "start": "node ./dist/app/server/",
     "start:dev": "node resources/js/start-dev.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

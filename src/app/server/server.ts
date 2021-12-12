@@ -1,15 +1,15 @@
-import { ApolloServer } from "apollo-server-fastify";
 import { FastifyInstance } from "fastify";
 
 import config from "@app/config";
 import { apolloConfig } from "@app/apollo/apolloConfig";
+import { CustomApolloServer } from "@app/apollo";
 
 export default class Server {
-  public apolloServer: ApolloServer;
+  public apolloServer: CustomApolloServer;
   public appConfig;
 
   constructor(public app: FastifyInstance) {
-    this.apolloServer = new ApolloServer(apolloConfig(app));
+    this.apolloServer = new CustomApolloServer(apolloConfig(app));
     this.appConfig = config.app;
   }
 

@@ -1,5 +1,4 @@
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { ApolloServerFastifyConfig } from "apollo-server-fastify";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { FastifyInstance, FastifyReply } from "fastify";
 import { applyMiddleware } from "graphql-middleware";
@@ -8,6 +7,8 @@ import { typeDefs, resolvers } from "@root/schema";
 import { IFastifyRequest } from "@root/interfaces";
 
 import MiddlewareHandler from "@app/middlewares";
+import { ApolloServerFastifyConfig } from "@app/apollo";
+import { formatError } from "@app/apollo/formatError";
 interface ISession {
   request: IFastifyRequest;
   reply: FastifyReply;
@@ -29,6 +30,7 @@ const apolloConfig = (app: FastifyInstance): ApolloServerFastifyConfig => {
     },
     /* eslint-disable new-cap */
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer: app.server })],
+    formatError,
   };
 };
 

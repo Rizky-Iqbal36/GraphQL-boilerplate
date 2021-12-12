@@ -135,10 +135,11 @@ class MiddlewareHandler {
         if (localMiddleware) {
           this.registerLocalMiddleware(localMiddleware);
         } else if (globalMiddleware) {
-          if (!globalMiddleware.useMiddleware)
+          if (!globalMiddleware.useMiddleware) {
             throw new Error(
               "Please add useMiddleware function in order to activate middleware"
             );
+          }
           this.registerGlobalMiddleware(globalMiddleware);
         }
       }

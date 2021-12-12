@@ -8,16 +8,13 @@ class HeaderMiddleware {
   async useMiddleware(request: IFastifyRequest) {
     try {
       await Joi.object({
-        "accept-language": Joi.string(),
+        "accept-language": Joi.string().valid("en", "id").required(),
         "x-trace-id": Joi.string().required(),
       })
         .unknown()
         .validateAsync(request.headers)
-        .then(() => {
-          let lang = request.headers["accept-language"] as string;
-          if (!["en", "id"].includes(lang)) {
-            lang = "en";
-          }
+        .then((value) => {
+          const lang = value["accept-language"] as string;
           localization.i18n.setLocale(lang);
         });
     } catch (err: any) {
